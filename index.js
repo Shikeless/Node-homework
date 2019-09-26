@@ -1,23 +1,20 @@
 const fs = require('fs');
 const path = require('path');
-const readline = require('readline');
+const argv = require('yargs').argv
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
+console.log(argv.s, argv.f, argv.d);
 
-rl.question('What do you think of Node.js? ', (answer) => {
-  // TODO: Log the answer in a database
-  console.log(`Thank you for your valuable feedback: ${answer}`);
+// if (!fs.existsSync(argv.s)) {
+//   console.log('no such source directory')
+//   process.exit()
+// } else if (!fs.existsSync(argv.f)) {
+//   console.log('no such final directory')
+//   process.exit()
+// }
 
-  rl.close();
-});
-
-const unsortedFolder = './unsortedFolder';
+const unsortedFolder = argv.s;
 const sortedFolder = __dirname + '/sortedFolder'
 
-console.log(process.argv[2])
 
 function copyFile(source, target, cb) {
   let cbCalled = false;
@@ -38,35 +35,38 @@ function copyFile(source, target, cb) {
     }
   }
 }
-    
-const readDir = (base) => {
-    fs.readdir(base, (err, files) => {
-        if (err) console.log('readdir err ' + err); 
-        files.forEach(item => {
-            let localDir = path.join(base, item);
-            fs.stat(localDir, (err, stats) => {
-                if (err) console.log('stat err ' + err);
-                if (stats.isFile()) {
-                    const accept = ['.jpg', '.png', '.jpeg']
-                    const ext = path.extname(item)
-                    if (accept.includes(ext)) {
-                        var index = item[0].toUpperCase();
-                        fs.mkdir(path.join(sortedFolder, index), (err) => {
-                            copyFile(path.join(sortedFolder, index), path.join(sortedFolder, index, item), err => {
-                                console.log('done', err)
-                            })  
-                        })
-                    }
-                } else {
-                    readDir(localDir);
-                }
-            })
-        })
-    })
-    if (process.argv[2] === '-d') console.log('-d') 
-}
-  
-readDir(unsortedFolder);
 
-// fs.createReadStream(path.join(base, item)).pipe(path.join(sortedFolder, index, item)) 
-// TypeError: dest.on is not a function. 
+const readDir = (base) => {
+  fs.readdir(base, (err, files) => {
+      if (err) console.log('readdir err ' + err); 
+      files.forEach(item => {
+          let localDir = path.join(base, item);
+          fs.stat(localDir, (err, stats) => {
+              if (err) console.log('stat err ' + err);
+              if (stats.isFile()) {
+                  const accept = ['.jpg', '.png', '.jpeg']
+                  const ext = path.extname(item)
+                  if (accept.includes(ext)) {
+                      var index = item[0].toUpperCase();
+                      fs.mkdir(path.join(sortedFolder, index), (err) => {
+                          copyFile(path.join(base, item), path.join(sortedFolder, index, item), err => {
+                              console.log('done', err)
+                          })  
+                      })
+                  }
+              } else {
+                  readDir(localDir);
+              }
+          })
+      })
+  })
+}
+
+async function copyProcess(base) {
+  return readDir(base)
+}
+
+copyProcess(unsortedFolder)
+  .then() 
+    if (argv.d) console.log(argv.d)
+;
