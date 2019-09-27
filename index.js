@@ -4,16 +4,16 @@ const argv = require('yargs').argv
 
 console.log(argv.s, argv.f, argv.d);
 
-// if (!fs.existsSync(argv.s)) {
-//   console.log('no such source directory')
-//   process.exit()
-// } else if (!fs.existsSync(argv.f)) {
-//   console.log('no such final directory')
-//   process.exit()
-// }
+if (!fs.existsSync(argv.s)) {
+  console.log('no such source directory')
+  process.exit()
+} else if (!fs.existsSync(argv.f)) {
+  console.log('no such final directory')
+  process.exit()
+}
 
-const unsortedFolder = argv.s;
-const sortedFolder = __dirname + '/sortedFolder'
+const unsortedFolder = argv.s
+const sortedFolder = argv.f
 
 
 function copyFile(source, target, cb) {
@@ -36,37 +36,67 @@ function copyFile(source, target, cb) {
   }
 }
 
-const readDir = (base) => {
-  fs.readdir(base, (err, files) => {
-      if (err) console.log('readdir err ' + err); 
-      files.forEach(item => {
-          let localDir = path.join(base, item);
-          fs.stat(localDir, (err, stats) => {
-              if (err) console.log('stat err ' + err);
-              if (stats.isFile()) {
-                  const accept = ['.jpg', '.png', '.jpeg']
-                  const ext = path.extname(item)
-                  if (accept.includes(ext)) {
-                      var index = item[0].toUpperCase();
-                      fs.mkdir(path.join(sortedFolder, index), (err) => {
-                          copyFile(path.join(base, item), path.join(sortedFolder, index, item), err => {
-                              console.log('done', err)
-                          })  
-                      })
-                  }
-              } else {
-                  readDir(localDir);
-              }
+const readDir = (base, callbackOnFile, callbackOnFolder, done) => {
+    fs.readdir(base, (err, files) => {
+        if (err) return done(err)
+        let i = 0
+        
+        const next = (listDone) => { 
+            if (err) return listDone(err);
+
+            let filePath = files[i++];
+
+            if (!filePath) return listDone(null);
+
+            filePath = path.join(base, filePath);
+
+            fs.stat(filePath, (_, stat) => {
+                if (stat && stat.isDirectory()) {
+                    readDir(
+                      filePath, 
+                      callbackOnFile,
+                      callbackOnFolder,
+                      next.bind(null, listDone))
+                } else {
+                    callbackOnFile(filePath, next.bind(null, listDone))
+                }
+            })
+        }
+
+        next(err => {
+          if (!err) callbackOnFolder(base);
+          done(err);
+        });
+    })
+}
+
+const deleteIfD = (filePath, cb) => {
+  if (argv.d) {fs.unlink(filePath), err => {
+    cb()
+  }}
+  cb()
+}
+
+readDir(
+  unsortedFolder,
+  (filePath, cb) => {
+    const fileName = path.parse(filePath).base
+    const index = fileName[0].toUpperCase()
+    console.log(fileName)
+    console.log(index);
+    fs.mkdir(path.join(sortedFolder, index), (err) => {
+      copyFile(filePath, path.join(sortedFolder, index, path.parse(filePath).base), (err) => {
+          deleteIfD(filePath, cb)
           })
-      })
-  })
-}
-
-async function copyProcess(base) {
-  return readDir(base)
-}
-
-copyProcess(unsortedFolder)
-  .then() 
-    if (argv.d) console.log(argv.d)
-;
+    })  
+  },
+  base => {
+    if (argv.d) fs.rmdir(base), err => {
+      console.log(err);
+    }
+  }, 
+  err => {
+    if (!err && argv.d) return console.log('ready for delete')
+    console.log('type d for delete delete')
+  }
+);
