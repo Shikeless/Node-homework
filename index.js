@@ -1,39 +1,22 @@
-const fs = require('fs');
-const path = require('path');
-const argv = require('yargs').argv
-const copyFile = require('./modules/copyFile.js');
-const readDir = require('./modules/readDir.js');
+const http = require('http');
+const time = require('moment');
+require('dotenv').config();
 
-if (!fs.existsSync(argv.s)) {
-  console.log('no such source directory')
-  process.exit()
-} else if (!fs.existsSync(argv.f)) {
-  console.log('no such final directory')
-  process.exit()
-}
+const timestamp = time.utc().format('LLLL')
 
-const unsortedFolder = argv.s
-const sortedFolder = argv.f
+const server = http.createServer((req, res) => {
+    if (req.url !== '/favicon.ico') {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'text/plain');
+        const loger = setInterval(() => {console.log(timestamp)}, process.env.INTERVAL)
+        setTimeout(
+            () => { 
+                clearInterval(loger);
+                res.end(timestamp)
+            }, process.env.TIMEOUT);
+    }
+});
 
-readDir(
-  unsortedFolder,
-  (filePath, cb) => {
-    const fileName = path.parse(filePath).base
-    const index = fileName[0].toUpperCase()
-    fs.mkdir(path.join(sortedFolder, index), (err) => {
-      copyFile(filePath, path.join(sortedFolder, index, path.parse(filePath).base), (err) => {
-        if (err) { 
-          cb(err) 
-        } else {
-          argv.d ? fs.unlink(filePath, err2 => cb(err2)) : cb(null)
-        }
-      })
-    })  
-  },
-  base => {
-    argv.d ? fs.rmdir(base, err => console.log(err)) : null;
-  }, 
-  err => {
-    console.log('Done:' + err)
-  }
-);
+server.listen(3000, () => {
+	console.log('listen port 3000');
+})
