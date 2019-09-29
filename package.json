@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Shikeless/Node-homework#readme",
   "dependencies": {
+    "promisify": "0.0.3",
     "yargs": "^14.0.0"
   }
 }

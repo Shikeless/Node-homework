@@ -1,102 +1,70 @@
 const fs = require('fs');
 const path = require('path');
 const argv = require('yargs').argv
+const {promisify} = require('util')
+const readdir = promisify(fs.readdir)
+const stat = promisify(fs.stat)
+const mkdir = promisify(fs.mkdir)
+const unlink = promisify(fs.unlink)
+const rmdir = promisify(fs.rmdir)
 
 console.log(argv.s, argv.f, argv.d);
 
 if (!fs.existsSync(argv.s)) {
-  console.log('no such source directory')
-  process.exit()
+    console.log('no such source directory')
+    process.exit()
 } else if (!fs.existsSync(argv.f)) {
-  console.log('no such final directory')
-  process.exit()
+    console.log('no such final directory')
+    process.exit()
 }
 
 const unsortedFolder = argv.s
 const sortedFolder = argv.f
 
-
-function copyFile(source, target, cb) {
-  let cbCalled = false;
-
-  const rd = fs.createReadStream(source);
-  rd.on("error", err => done (err))
-
-  const wr = fs.createWriteStream(target);
-  wr.on("error", err => done (err))
-    .on("close", () => done (null));
-
-  rd.pipe(wr);
-
-  function done(err) {
-    if (!cbCalled) {
-      cb(err);
-      cbCalled = true;
-    }
+function copyFile(source, target) {
+    return new Promise((resolve, reject) => {
+        try {
+      const rd = fs.createReadStream(source);
+      rd.on("error", err => reject (err))
+    
+      const wr = fs.createWriteStream(target);
+      wr.on("error", err => reject (err))
+        .on("close", () => resolve (null));
+    
+      rd.pipe(wr);
+        } catch(err) {
+            console.error(err)
+        }
+    })
   }
-}
 
-const readDir = (base, callbackOnFile, callbackOnFolder, done) => {
-    fs.readdir(base, (err, files) => {
-        if (err) return done(err)
-        let i = 0
-        
-        const next = (listDone) => { 
-            if (err) return listDone(err);
-
-            let filePath = files[i++];
-
-            if (!filePath) return listDone(null);
-
-            filePath = path.join(base, filePath);
-
-            fs.stat(filePath, (_, stat) => {
-                if (stat && stat.isDirectory()) {
-                    readDir(
-                      filePath, 
-                      callbackOnFile,
-                      callbackOnFolder,
-                      next.bind(null, listDone))
-                } else {
-                    callbackOnFile(filePath, next.bind(null, listDone))
+const readDir = async (base) => { 
+    try {
+        const files = await readdir(base)
+        await Promise.all(
+            files.map(async item => {
+                try {
+                    let localDir = path.join(base, item);
+                    let statistics = await stat(localDir)
+                    if (statistics.isFile()) {
+                        let index = item[0].toUpperCase()
+                        await mkdir(path.join(sortedFolder, index), { recursive: true})
+                        await copyFile(path.join(localDir), path.join(sortedFolder, index, item))
+                        argv.d ? await unlink(localDir) : null
+                    } else if (statistics.isDirectory()) {
+                        await readDir(localDir)
+                    }
+                } catch(err) {
+                    console.error(err)
                 }
             })
-        }
-
-        next(err => {
-          if (!err) callbackOnFolder(base);
-          done(err);
-        });
-    })
-}
-
-const deleteIfD = (filePath, cb) => {
-  if (argv.d) {fs.unlink(filePath), err => {
-    cb()
-  }}
-  cb()
-}
-
-readDir(
-  unsortedFolder,
-  (filePath, cb) => {
-    const fileName = path.parse(filePath).base
-    const index = fileName[0].toUpperCase()
-    console.log(fileName)
-    console.log(index);
-    fs.mkdir(path.join(sortedFolder, index), (err) => {
-      copyFile(filePath, path.join(sortedFolder, index, path.parse(filePath).base), (err) => {
-          deleteIfD(filePath, cb)
-          })
-    })  
-  },
-  base => {
-    if (argv.d) fs.rmdir(base), err => {
-      console.log(err);
+        )
+        argv.d ? await rmdir(base) : null
+    } catch(err) {
+        console.error(err)
     }
-  }, 
-  err => {
-    if (!err && argv.d) return console.log('ready for delete')
-    console.log('type d for delete delete')
-  }
-);
+}
+
+readDir(unsortedFolder)
+
+
