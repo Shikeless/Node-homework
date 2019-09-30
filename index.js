@@ -8,12 +8,15 @@ const server = http.createServer((req, res) => {
     if (req.url !== '/favicon.ico') {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'text/plain');
-        const loger = setInterval(() => {console.log(timestamp)}, process.env.INTERVAL)
-        setTimeout(
-            () => { 
-                clearInterval(loger);
-                res.end(timestamp)
-            }, process.env.TIMEOUT);
+        const start = Date.now();
+        const loger = setInterval(
+            () => {
+                console.log(timestamp)
+                if (start + Number(process.env.TIMEOUT) <= Date.now()) {
+                    clearInterval(loger)
+                    return res.end(timestamp)
+                }
+            }, process.env.INTERVAL)
     }
 });
 
