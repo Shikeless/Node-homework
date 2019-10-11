@@ -1,25 +1,28 @@
 {
-  "name": "index.js",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Shikeless/Node-homework.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Shikeless/Node-homework/issues"
-  },
-  "homepage": "https://github.com/Shikeless/Node-homework#readme",
-  "dependencies": {
-    "dotenv": "^8.1.0",
-    "moment": "^2.24.0",
-    "promisify": "0.0.3",
-    "yargs": "^14.0.0"
-  }
+    "name": "app",
+    "version": "0.0.0",
+    "private": true,
+    "nodemonConfig": {
+        "ignore": [
+            "db.json"
+        ]
+    },
+    "scripts": {
+        "start": "node ./bin/www",
+        "dev": "nodemon ./bin/www"
+    },
+    "dependencies": {
+        "cookie-parser": "~1.4.4",
+        "debug": "~2.6.9",
+        "dotenv": "^8.1.0",
+        "express": "~4.16.1",
+        "http-errors": "~1.6.3",
+        "lowdb": "^1.0.0",
+        "morgan": "~1.9.1",
+        "nodemon": "^1.19.3",
+        "pug": "2.0.0-beta11"
+    },
+    "devDependencies": {
+        "nodemon": "^1.19.3"
+    }
 }
