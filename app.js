@@ -12,7 +12,7 @@ var indexRouter = require("./routes/index");
 
 var app = express();
 
-// db.defaults({ posts: [], user: {}, count: 0 }).write();
+db.defaults({}).write();
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
