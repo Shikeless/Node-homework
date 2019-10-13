@@ -96,11 +96,14 @@ router.post("/admin/skills", function(req, res, next) {
 });
 
 router.post("/admin/upload", upload.single("photo"), function(req, res, next) {
-    const file = req.body.photo;
-    console.log("req.body: ", req.body);
-    console.log("req.file: ", req.file);
-    console.log("req.body.photo", req.body.photo);
-    res.send(file);
+    const name = req.file.filename;
+    db.get("products")
+        .push({
+            src: `./public/assets/img/products/${name}`,
+            name: req.body.name,
+            price: req.body.price
+        })
+        .write();
 });
 
 module.exports = router;
