@@ -1,11 +1,34 @@
 var express = require("express");
 var router = express.Router();
+const path = require("path");
 const low = require("lowdb");
 const FileSync = require("lowdb/adapters/FileSync");
 const adapter = new FileSync("db.json");
 const db = low(adapter);
-var multer = require("multer");
-var upload = multer({ dest: "public/assets/img/products" });
+const multer = require("multer");
+// const upload = multer({ dest: "public/assets/img/products" });
+
+const upload = multer({
+    storage: multer.diskStorage({
+        destination: path.resolve(
+            process.cwd() + "/public/assets/img/products"
+        ),
+        filename: (req, file, cb) => {
+            const extension = path.extname(file.originalname);
+            cb(null, file.fieldname + "-" + Date.now() + extension);
+        }
+    }),
+    fileFilter: (req, file, cb) => {
+        const allowedFileTypes = ["image/png", "image/jpg", "image/jpeg"];
+        if (!allowedFileTypes.includes(file.mimetype)) {
+            return cb(new Error("File must be image"));
+        }
+        cb(null, true);
+    },
+    limits: {
+        fileSize: 2097152
+    }
+});
 
 /* GET home page. */
 router.get("/", function(req, res, next) {
@@ -73,7 +96,11 @@ router.post("/admin/skills", function(req, res, next) {
 });
 
 router.post("/admin/upload", upload.single("photo"), function(req, res, next) {
-    res.send(req.body.photo);
+    const file = req.body.photo;
+    console.log("req.body: ", req.body);
+    console.log("req.file: ", req.file);
+    console.log("req.body.photo", req.body.photo);
+    res.send(file);
 });
 
 module.exports = router;
