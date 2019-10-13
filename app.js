@@ -1,12 +1,14 @@
-var createError = require("http-errors");
-var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
+const createError = require("http-errors");
+const express = require("express");
+const path = require("path");
+const cookieParser = require("cookie-parser");
 const low = require("lowdb");
-var logger = require("morgan");
+const logger = require("morgan");
 const FileSync = require("lowdb/adapters/FileSync");
 const adapter = new FileSync("db.json");
 const db = low(adapter);
+const session = require("express-session");
+const flash = require("connect-flash");
 
 var indexRouter = require("./routes/index");
 
@@ -24,6 +26,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+app.use(session({ cookie: { maxAge: 60000 }, secret: "cat" }));
+app.use(flash());
+
 app.use("/", indexRouter);
 
 app.use(function(req, res, next) {
@@ -38,7 +43,7 @@ app.use(function(err, req, res, next) {
 
     // render the error page
     res.status(err.status || 500);
-    res.render("error");
+    res.render("pages/error", { error: err.message });
 });
 
 module.exports = app;

@@ -8,7 +8,7 @@
   "skills": [
     {
       "id": 1,
-      "number": 12,
+      "number": 1,
       "text": "Возраст начала занятий на скрипке"
     },
     {
@@ -72,12 +72,21 @@
       "src": "./public/assets/img/products/Work9.jpg",
       "name": "Вино вдохновение",
       "price": 600
+    },
+    {
+      "src": "./public/assets/img/products/photo-1570992975562.jpeg",
+      "name": "кит",
+      "price": "123"
     }
   ],
   "users": [
     {
       "email": "Shikeless@gmail.com",
       "password": "123"
+    },
+    {
+      "email": "123@123.com",
+      "password": "12312412"
     }
   ],
   "contacts": [
@@ -100,6 +109,41 @@
       "name": "a",
       "email": "123@123.com",
       "message": "adf"
+    },
+    {
+      "name": "Андрей",
+      "email": "test@test.ru",
+      "message": "123123"
+    },
+    {
+      "name": "Андрей",
+      "email": "test@test.ru",
+      "message": "123123"
+    },
+    {
+      "name": "Андрей",
+      "email": "test@test.ru",
+      "message": "12312312312adfasdfasdf"
+    },
+    {
+      "name": "Андрей",
+      "email": "test@test.ru",
+      "message": "12312312312adfasdfasdf"
+    },
+    {
+      "name": "Андрей",
+      "email": "test@test.ru",
+      "message": "12312312312adfasdfasdf"
+    },
+    {
+      "name": "Андрей",
+      "email": "test@test.ru",
+      "message": "12312312312adfasdfasdf"
+    },
+    {
+      "name": "Ффффффывфывф",
+      "email": "123@123.com",
+      "message": "12314adfadfasf"
     }
   ]
 }

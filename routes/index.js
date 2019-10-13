@@ -6,6 +6,7 @@ const FileSync = require("lowdb/adapters/FileSync");
 const adapter = new FileSync("db.json");
 const db = low(adapter);
 const multer = require("multer");
+var flash = require("connect-flash");
 
 const upload = multer({
     storage: multer.diskStorage({
@@ -37,7 +38,8 @@ router.get("/", function(req, res, next) {
     res.render("pages/index", {
         social: social,
         skills: skills,
-        products: products
+        products: products,
+        msgsemail: req.flash("msgsemail")
     });
 });
 
@@ -49,24 +51,31 @@ router.post("/", function(req, res, next) {
             message: req.body.message
         })
         .write();
+    req.flash("msgsemail", "message sended");
+    res.redirect("/");
 });
 
-router.get("/login", function(err, req, res, next) {
-    try {
-        res.render("pages/login");
-    } catch (err) {
-        res.send(err);
-    }
+router.get("/login", function(req, res, next) {
+    var social = db.get("social").value();
+    res.render("pages/login", {
+        social: social,
+        msglogin: req.flash("msglogin")
+    });
 });
 
 router.post("/login", function(req, res, next) {
     db.get("users")
         .push({ email: req.body.email, password: req.body.password })
         .write();
+    req.flash("msglogin", "you are loged in");
+    res.redirect("/");
 });
 
 router.get("/admin", function(req, res, next) {
-    res.render("pages/admin");
+    res.render("pages/admin", {
+        msgskill: req.flash("msgskill"),
+        msgsfile: req.flash("msgsfile")
+    });
 });
 
 router.post("/admin/skills", function(req, res, next) {
@@ -94,6 +103,8 @@ router.post("/admin/skills", function(req, res, next) {
             .assign({ number: Number(req.body.years) })
             .write();
     }
+    req.flash("msgskill", "information has been changed");
+    res.redirect("/admin");
 });
 
 router.post("/admin/upload", upload.single("photo"), function(req, res, next) {
@@ -105,6 +116,8 @@ router.post("/admin/upload", upload.single("photo"), function(req, res, next) {
             price: req.body.price
         })
         .write();
+    req.flash("msgsfile", "new product has been aded");
+    res.redirect("/admin");
 });
 
 module.exports = router;
