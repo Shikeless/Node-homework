@@ -6,7 +6,6 @@ const FileSync = require("lowdb/adapters/FileSync");
 const adapter = new FileSync("db.json");
 const db = low(adapter);
 const multer = require("multer");
-// const upload = multer({ dest: "public/assets/img/products" });
 
 const upload = multer({
     storage: multer.diskStorage({
@@ -52,9 +51,12 @@ router.post("/", function(req, res, next) {
         .write();
 });
 
-router.get("/login", function(req, res, next) {
-    var data = db.get("renderData").value();
-    res.render("pages/login", data);
+router.get("/login", function(err, req, res, next) {
+    try {
+        res.render("pages/login");
+    } catch (err) {
+        res.send(err);
+    }
 });
 
 router.post("/login", function(req, res, next) {
@@ -64,8 +66,7 @@ router.post("/login", function(req, res, next) {
 });
 
 router.get("/admin", function(req, res, next) {
-    var data = db.get("renderData").value();
-    res.render("pages/admin", data);
+    res.render("pages/admin");
 });
 
 router.post("/admin/skills", function(req, res, next) {

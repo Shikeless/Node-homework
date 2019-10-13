@@ -32,8 +32,8 @@ block content
               button(type="submit").button Сохранить
           form.form-upload(action='/admin/upload' method="POST" enctype="multipart/form-data")
             .form-title Добавить товар
-            if (msgfile)
-              .status= msgfile
+            if (msgsfile)
+              .status= msgsfile
             .form-upload__input-line
               .form-upload__wraper
                 label.form-upload__label
