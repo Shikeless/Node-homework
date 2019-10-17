@@ -1,49 +1,32 @@
-const createError = require("http-errors");
-const express = require("express");
-const path = require("path");
-const cookieParser = require("cookie-parser");
+const Koa = require("koa");
+const app = new Koa();
+const router = require("./routes");
+const serve = require("koa-static");
+const koaBody = require("koa-body");
+const Pug = require("koa-pug");
 const low = require("lowdb");
-const logger = require("morgan");
 const FileSync = require("lowdb/adapters/FileSync");
 const adapter = new FileSync("db.json");
 const db = low(adapter);
-const session = require("express-session");
-const flash = require("connect-flash");
 
-var indexRouter = require("./routes/index");
+app.use(
+    koaBody({
+        formidable: {
+            uploadDir: "./public/img/products" // Директория, куда следует сохранить файл
+        },
+        multipart: true
+    })
+);
 
-var app = express();
-
-db.defaults({}).write();
-
-// view engine setup
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "pug");
-
-app.use(logger("dev"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
-
-app.use(session({ cookie: { maxAge: 60000 }, secret: "cat" }));
-app.use(flash());
-
-app.use("/", indexRouter);
-
-app.use(function(req, res, next) {
-    next(createError(404));
+const pug = new Pug({
+    viewPath: "./views",
+    basedir: "./views",
+    app: app
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get("env") === "development" ? err : {};
+app.use(serve("./public"));
+app.use(router.routes());
 
-    // render the error page
-    res.status(err.status || 500);
-    res.render("pages/error", { error: err.message });
+app.listen(3000, function() {
+    console.log("Server running on https://localhost:3000");
 });
-
-module.exports = app;

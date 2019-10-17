@@ -13,17 +13,17 @@
     },
     {
       "id": 2,
-      "number": 200,
+      "number": 1,
       "text": "Концертов отыграл"
     },
     {
       "id": 3,
-      "number": 30,
+      "number": 1,
       "text": "Максимальное число городов в туре"
     },
     {
       "id": 4,
-      "number": 20,
+      "number": 1,
       "text": "Лет на сцене в качестве скрипача"
     }
   ],
@@ -72,78 +72,28 @@
       "src": "./public/assets/img/products/Work9.jpg",
       "name": "Вино вдохновение",
       "price": 600
-    },
-    {
-      "src": "./public/assets/img/products/photo-1570992975562.jpeg",
-      "name": "кит",
-      "price": "123"
     }
   ],
   "users": [
     {
-      "email": "Shikeless@gmail.com",
-      "password": "123"
+      "email": "stu@dent.com",
+      "password": "1451251"
     },
     {
-      "email": "123@123.com",
-      "password": "12312412"
+      "email": "test@test.com",
+      "password": "фывафыва"
     }
   ],
   "contacts": [
     {
       "name": "Ффффффывфывф",
-      "email": "123@123.com",
-      "message": "123123"
-    },
-    {
-      "name": "Ффффффывфывф",
-      "email": "123@123.com",
-      "message": "123123"
-    },
-    {
-      "name": "Ффффффывфывф",
-      "email": "123@123.com",
-      "message": "123123"
-    },
-    {
-      "name": "a",
-      "email": "123@123.com",
-      "message": "adf"
-    },
-    {
-      "name": "Андрей",
       "email": "test@test.ru",
-      "message": "123123"
+      "message": "adfadf"
     },
     {
-      "name": "Андрей",
-      "email": "test@test.ru",
-      "message": "123123"
-    },
-    {
-      "name": "Андрей",
-      "email": "test@test.ru",
-      "message": "12312312312adfasdfasdf"
-    },
-    {
-      "name": "Андрей",
-      "email": "test@test.ru",
-      "message": "12312312312adfasdfasdf"
-    },
-    {
-      "name": "Андрей",
-      "email": "test@test.ru",
-      "message": "12312312312adfasdfasdf"
-    },
-    {
-      "name": "Андрей",
-      "email": "test@test.ru",
-      "message": "12312312312adfasdfasdf"
-    },
-    {
-      "name": "Ффффффывфывф",
-      "email": "123@123.com",
-      "message": "12314adfadfasf"
+      "name": "Андрейф Вфывфы",
+      "email": "stu@dent.com",
+      "message": "123124"
     }
   ]
 }
