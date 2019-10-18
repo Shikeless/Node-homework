@@ -2,7 +2,7 @@ const Koa = require("koa");
 const app = new Koa();
 const router = require("./routes");
 const serve = require("koa-static");
-const koaBody = require("koa-body");
+const koaBody = require("koa-bodyparser");
 const Pug = require("koa-pug");
 const low = require("lowdb");
 const FileSync = require("lowdb/adapters/FileSync");
@@ -11,9 +11,7 @@ const db = low(adapter);
 
 app.use(
     koaBody({
-        formidable: {
-            uploadDir: "./public/img/products" // Директория, куда следует сохранить файл
-        },
+        enableTypes: ["form", "json"],
         multipart: true
     })
 );

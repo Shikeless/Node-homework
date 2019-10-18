@@ -4,17 +4,17 @@ const low = require("lowdb");
 const FileSync = require("lowdb/adapters/FileSync");
 const adapter = new FileSync("db.json");
 const db = low(adapter);
-const multer = require("koa-multer");
+const multer = require("@koa/multer");
 const path = require("path");
 
 const upload = multer({
     storage: multer.diskStorage({
-        destination: path.resolve(
-            process.cwd() + "/public/assets/img/products"
-        ),
+        destination: function(req, file, cb) {
+            cb(null, "./public/assets/img/products");
+        },
         filename: (req, file, cb) => {
             const extension = path.extname(file.originalname);
-            cb(null, file.fieldname + "-" + Date.now() + extension);
+            cb(null, `${file.fieldname}-${Date.now()}${extension}`);
         }
     }),
     fileFilter: (req, file, cb) => {
@@ -142,17 +142,18 @@ router.post("/admin/skills", async (ctx, next) => {
 
 const uploader = async (ctx, next) => {
     try {
+        console.log(upload);
         await upload.single("photo")(ctx, async ctx2 => {
-            await ctx.redirect("/admin");
+            await next();
         });
     } catch (err) {
-        await ctx.redirect("/admin");
+        console.log(err);
     }
 };
 
-router.post("/admin/upload", async (ctx, next) => {
+router.post("/admin/upload", uploader, async (ctx, next) => {
     try {
-        uploader();
+        await ctx.redirect("/");
     } catch (err) {
         console.log(err);
         ctx.status = 400;
