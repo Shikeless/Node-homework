@@ -9,15 +9,15 @@ const path = require("path");
 
 const upload = multer({
     storage: multer.diskStorage({
-        destination: function(req, file, cb) {
+        destination: function(ctx, file, cb) {
             cb(null, "./public/assets/img/products");
         },
-        filename: (req, file, cb) => {
+        filename: (ctx, file, cb) => {
             const extension = path.extname(file.originalname);
             cb(null, `${file.fieldname}-${Date.now()}${extension}`);
         }
     }),
-    fileFilter: (req, file, cb) => {
+    fileFilter: (ctx, file, cb) => {
         const allowedFileTypes = ["image/png", "image/jpg", "image/jpeg"];
         if (!allowedFileTypes.includes(file.mimetype)) {
             return cb(new Error("File must be image"));
@@ -37,7 +37,8 @@ router.get("/", async (ctx, next) => {
         await ctx.render("pages/index", {
             social: social,
             skills: skills,
-            products: products
+            products: products,
+            msgsemail: ctx.flash("msgsemail")[0]
         });
     } catch (err) {
         console.log(err);
@@ -56,6 +57,7 @@ router.post("/", async (ctx, next) => {
                 message: ctx.request.body.message
             })
             .write();
+        ctx.flash("msgsemail", "Sending was successful");
         await ctx.redirect("/");
     } catch (err) {
         console.log(err);
@@ -67,7 +69,10 @@ router.post("/", async (ctx, next) => {
 router.get("/login", async (ctx, next) => {
     try {
         var social = db.get("social").value();
-        await ctx.render("pages/login", { social: social });
+        await ctx.render("pages/login", {
+            social: social,
+            msglogin: ctx.flash("msglogin")[0]
+        });
     } catch (err) {
         console.log(err);
         ctx.status = 400;
@@ -84,6 +89,7 @@ router.post("/login", async (ctx, next) => {
                 password: ctx.request.body.password
             })
             .write();
+        ctx.flash("msglogin", "Sending was successful");
         await ctx.redirect("/");
     } catch (err) {
         console.log(err);
@@ -94,7 +100,10 @@ router.post("/login", async (ctx, next) => {
 
 router.get("/admin", async (ctx, next) => {
     try {
-        await ctx.render("pages/admin");
+        await ctx.render("pages/admin", {
+            msgskill: ctx.flash("msgskill")[0],
+            msgsfile: ctx.flash("msgsfile")[0]
+        });
     } catch (err) {
         console.log(err);
         ctx.status = 400;
@@ -132,6 +141,7 @@ router.post("/admin/skills", async (ctx, next) => {
                 .assign({ number: Number(ctx.request.body.years) })
                 .write();
         }
+        ctx.flash("msgskill", "Sending was successful");
         await ctx.redirect("/admin");
     } catch (err) {
         console.log(err);
@@ -142,7 +152,6 @@ router.post("/admin/skills", async (ctx, next) => {
 
 const uploader = async (ctx, next) => {
     try {
-        console.log(upload);
         await upload.single("photo")(ctx, async ctx2 => {
             await next();
         });
@@ -153,6 +162,15 @@ const uploader = async (ctx, next) => {
 
 router.post("/admin/upload", uploader, async (ctx, next) => {
     try {
+        await db
+            .get("products")
+            .push({
+                src: ctx.request.file.path,
+                name: ctx.request.body.name,
+                price: ctx.request.body.price
+            })
+            .write();
+        ctx.flash("msgsfile", "Sending was successful");
         await ctx.redirect("/");
     } catch (err) {
         console.log(err);

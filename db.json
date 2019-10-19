@@ -8,22 +8,22 @@
   "skills": [
     {
       "id": 1,
-      "number": 1,
+      "number": 2,
       "text": "Возраст начала занятий на скрипке"
     },
     {
       "id": 2,
-      "number": 1,
+      "number": 2,
       "text": "Концертов отыграл"
     },
     {
       "id": 3,
-      "number": 1,
+      "number": 2,
       "text": "Максимальное число городов в туре"
     },
     {
       "id": 4,
-      "number": 1,
+      "number": 2,
       "text": "Лет на сцене в качестве скрипача"
     }
   ],
@@ -72,6 +72,11 @@
       "src": "./public/assets/img/products/Work9.jpg",
       "name": "Вино вдохновение",
       "price": 600
+    },
+    {
+      "src": "public/assets/img/products/photo-1571483519682.jpg",
+      "name": "Андрей",
+      "price": "9999"
     }
   ],
   "users": [
@@ -94,6 +99,16 @@
       "name": "Андрейф Вфывфы",
       "email": "stu@dent.com",
       "message": "123124"
+    },
+    {
+      "name": "Ффффффывфывф",
+      "email": "123@123.com",
+      "message": "141241135123512"
+    },
+    {
+      "name": "Андрей",
+      "email": "stu@dent.com",
+      "message": "1451351235"
     }
   ]
 }

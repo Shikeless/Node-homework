@@ -8,6 +8,20 @@ const low = require("lowdb");
 const FileSync = require("lowdb/adapters/FileSync");
 const adapter = new FileSync("db.json");
 const db = low(adapter);
+const flash = require("koa-connect-flash");
+const session = require("koa-session");
+
+const CONFIG = {
+    key: "koa:sess",
+    maxAge: 86400000,
+    overwrite: true,
+    httpOnly: true,
+    signed: false,
+    rolling: false,
+    renew: false
+};
+
+app.use(session(CONFIG, app)).use(flash());
 
 app.use(
     koaBody({
