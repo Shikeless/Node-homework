@@ -1,0 +1,114 @@
+{
+  "social": [
+    "fa-linkedin-in",
+    "fa-github-alt",
+    "fa-tumblr",
+    "fa-vk"
+  ],
+  "skills": [
+    {
+      "id": 1,
+      "number": 2,
+      "text": "Возраст начала занятий на скрипке"
+    },
+    {
+      "id": 2,
+      "number": 2,
+      "text": "Концертов отыграл"
+    },
+    {
+      "id": 3,
+      "number": 2,
+      "text": "Максимальное число городов в туре"
+    },
+    {
+      "id": 4,
+      "number": 2,
+      "text": "Лет на сцене в качестве скрипача"
+    }
+  ],
+  "products": [
+    {
+      "src": "./public/assets/img/products/Work1.jpg",
+      "name": "Вино вдохновение",
+      "price": 600
+    },
+    {
+      "src": "./public/assets/img/products/Work2.jpg",
+      "name": "Вино вдохновение",
+      "price": 600
+    },
+    {
+      "src": "./public/assets/img/products/Work3.jpg",
+      "name": "Вино вдохновение",
+      "price": 600
+    },
+    {
+      "src": "./public/assets/img/products/Work4.jpg",
+      "name": "Вино вдохновение",
+      "price": 600
+    },
+    {
+      "src": "./public/assets/img/products/Work5.jpg",
+      "name": "Вино вдохновение",
+      "price": 600
+    },
+    {
+      "src": "./public/assets/img/products/Work6.jpg",
+      "name": "Вино вдохновение",
+      "price": 600
+    },
+    {
+      "src": "./public/assets/img/products/Work7.jpg",
+      "name": "Вино вдохновение",
+      "price": 600
+    },
+    {
+      "src": "./public/assets/img/products/Work8.jpg",
+      "name": "Вино вдохновение",
+      "price": 600
+    },
+    {
+      "src": "./public/assets/img/products/Work9.jpg",
+      "name": "Вино вдохновение",
+      "price": 600
+    },
+    {
+      "src": "public/assets/img/products/photo-1571483519682.jpg",
+      "name": "Андрей",
+      "price": "9999"
+    }
+  ],
+  "users": [
+    {
+      "email": "stu@dent.com",
+      "password": "1451251"
+    },
+    {
+      "email": "test@test.com",
+      "password": "фывафыва"
+    }
+  ],
+  "contacts": [
+    {
+      "name": "Ффффффывфывф",
+      "email": "test@test.ru",
+      "message": "adfadf"
+    },
+    {
+      "name": "Андрейф Вфывфы",
+      "email": "stu@dent.com",
+      "message": "123124"
+    },
+    {
+      "name": "Ффффффывфывф",
+      "email": "123@123.com",
+      "message": "141241135123512"
+    },
+    {
+      "name": "Андрей",
+      "email": "stu@dent.com",
+      "message": "1451351235"
+    }
+  ]
+}
